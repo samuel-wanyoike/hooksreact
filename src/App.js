@@ -1,37 +1,45 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import './App.css';
 
 function App() {
+  const [number, setNumber] = useState(0);
+  const [dark, setDark] = useState(false);
+  //in this useMemo, in only calls the function inside when the number changes, stores the number in the memory
+  const doubleNumber = useMemo(() => {
+   return slowFunction(number)
+  }, [number])
 
-  const [name, setName] = useState('');
+  //REFERENTIAL OF AN OBJECT OR ARRAY
+  //the useMemo is used to ensure the themestyle object does not change unless the dark variable changes.
+  //an object changes everytime it is rerendered hence in this case the object is only referred to when dark changes 
+  const themeStyles = useMemo(() => {
+    return {
+      background: dark ? 'black' : 'white',
+      color: dark ? 'white' : 'black' 
+    }
+  }, [dark])
 
- //useRef does not cause a rerender of the component when state is updated. it is not part of the component lifecycle
- const renderCount = useRef(0);
-
- useEffect(() => {
-  renderCount.current = renderCount.current+1
-  });
-
-//use useRef to reference a HTML element
-  const inputRef = useRef();
-  const focus =() => {
-    inputRef.current.focus();
-  }
-
-  //using a ref to store prevous value of a state
-  const prevNameRef = useRef('');
   useEffect(() => {
-    prevNameRef.current = name
-  }, [name]);
+    console.log('theme changed')
+  }, [themeStyles])
+ 
 
   return (
     <div>
-      <input ref={inputRef} value={name} onChange={e => setName(e.target.value)}/>
-      <div>my current name is: {name} but it used to be {prevNameRef.current}</div>
-      <div>my render count is: {renderCount.current}</div>
-      <button onClick={focus}>Focus</button>
+      <input type='number' value={number} onChange={e => setNumber(parseInt(e.target.value))}/>
+      <button onClick={() => setDark(prevDark => !prevDark)}>Change theme</button>
+      <div style={themeStyles}>{doubleNumber}</div>
     </div>
   );
 }
 
+const slowFunction = (num) => {
+  console.log('calling slow function');
+  for (let i = 0; i <=100000000000; i++) {}
+  return num * 2
+}
+
 export default App;
+
+
+ 
