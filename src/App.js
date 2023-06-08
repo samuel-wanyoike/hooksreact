@@ -35,7 +35,7 @@ function App() {
 
 const slowFunction = (num) => {
   console.log('calling slow function');
-  for (let i = 0; i <=100000000000; i++) {}
+  for (let i = 0; i <=10; i++) {}
   return num * 2
 }
 
