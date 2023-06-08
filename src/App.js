@@ -1,42 +1,28 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useState, useCallback } from 'react';
 import './App.css';
+import { List } from './List'
 
 function App() {
   const [number, setNumber] = useState(0);
   const [dark, setDark] = useState(false);
-  //in this useMemo, in only calls the function inside when the number changes, stores the number in the memory
-  const doubleNumber = useMemo(() => {
-   return slowFunction(number)
+
+  //the usecallback prevents running of the fuction during rerender unless the number changes
+  const getItems = useCallback(() => {
+    return [number, number + 1, number + 2]
   }, [number])
-
-  //REFERENTIAL OF AN OBJECT OR ARRAY
-  //the useMemo is used to ensure the themestyle object does not change unless the dark variable changes.
-  //an object changes everytime it is rerendered hence in this case the object is only referred to when dark changes 
-  const themeStyles = useMemo(() => {
-    return {
-      background: dark ? 'black' : 'white',
-      color: dark ? 'white' : 'black' 
-    }
-  }, [dark])
-
-  useEffect(() => {
-    console.log('theme changed')
-  }, [themeStyles])
- 
+  
+  const themes = {
+    background: dark ? 'black' : 'white',
+    color: dark ? 'white' : 'black'
+  }
 
   return (
-    <div>
+    <div style={themes}>
       <input type='number' value={number} onChange={e => setNumber(parseInt(e.target.value))}/>
       <button onClick={() => setDark(prevDark => !prevDark)}>Change theme</button>
-      <div style={themeStyles}>{doubleNumber}</div>
+      <List getItems={getItems}/>
     </div>
   );
-}
-
-const slowFunction = (num) => {
-  console.log('calling slow function');
-  for (let i = 0; i <=10; i++) {}
-  return num * 2
 }
 
 export default App;
