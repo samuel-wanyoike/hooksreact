@@ -1,43 +1,23 @@
-import React, { useReducer } from 'react';
+import React, { useReducer, useState } from 'react';
 import './App.css';
 
 
 const ACTIONS = {
-  INCREMENT: 'increment',
-  DECREMENT: 'decrement'
+  ADD_TODO: 'add-todo'
 }
-
-function reducer(state, action) {
-
-  switch (action.type) {
-    case ACTIONS.INCREMENT:
-      return {count: state.count + 1}
-    case ACTIONS.DECREMENT:
-      return {count: state.count - 1}
-    default:
-      return state
-    
-  }
-
-}
-
 function App() {
-  const [state, dispatch] = useReducer(reducer, { count: 0 })
+  const [todos, dispatch] = useReducer(reducer, { count: 0 });
+  const [name, setName] =useState('');
 
-  const increment = () => {
-    dispatch({ type: ACTIONS.INCREMENT })
-  };
-
-  const decrement = () => {
-    dispatch({ type: ACTIONS.DECREMENT })
-  };
-
+  const handleSubmit = () => {
+    dispatch({type: ACTIONS.ADD_TODO})
+  }
 
   return (
     <div>
-      <button onClick={decrement}>-</button>
-      <span>{state.count}</span>
-      <button onClick={increment}>+</button>
+      <form onSubmit={handleSubmit}>
+        <input type='text' value={name} onChange={e => setName(e.target.value)}/>
+      </form>
     </div>
   );
 }
