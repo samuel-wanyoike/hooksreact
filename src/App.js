@@ -1,26 +1,43 @@
-import { useState, useCallback } from 'react';
+import React, { useReducer } from 'react';
 import './App.css';
-import { List } from './List'
 
-function App() {
-  const [number, setNumber] = useState(0);
-  const [dark, setDark] = useState(false);
 
-  //the usecallback prevents running of the fuction during rerender unless the number changes
-  const getItems = useCallback(() => {
-    return [number, number + 1, number + 2]
-  }, [number])
-  
-  const themes = {
-    background: dark ? 'black' : 'white',
-    color: dark ? 'white' : 'black'
+const ACTIONS = {
+  INCREMENT: 'increment',
+  DECREMENT: 'decrement'
+}
+
+function reducer(state, action) {
+
+  switch (action.type) {
+    case ACTIONS.INCREMENT:
+      return {count: state.count + 1}
+    case ACTIONS.DECREMENT:
+      return {count: state.count - 1}
+    default:
+      return state
+    
   }
 
+}
+
+function App() {
+  const [state, dispatch] = useReducer(reducer, { count: 0 })
+
+  const increment = () => {
+    dispatch({ type: ACTIONS.INCREMENT })
+  };
+
+  const decrement = () => {
+    dispatch({ type: ACTIONS.DECREMENT })
+  };
+
+
   return (
-    <div style={themes}>
-      <input type='number' value={number} onChange={e => setNumber(parseInt(e.target.value))}/>
-      <button onClick={() => setDark(prevDark => !prevDark)}>Change theme</button>
-      <List getItems={getItems}/>
+    <div>
+      <button onClick={decrement}>-</button>
+      <span>{state.count}</span>
+      <button onClick={increment}>+</button>
     </div>
   );
 }
