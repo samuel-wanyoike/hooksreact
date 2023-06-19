@@ -1,25 +1,33 @@
-import { useEffect, useState } from 'react';
+import { useState, useTransition } from 'react';
 import './App.css';
 
 function App() {
+  const [isPending, startTransition] = useTransition();
+  const [input, setInput] = useState('');
+  const [list, setList] = useState([]);
 
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth)
-  
-  const handleResize = () => {
-    setWindowWidth(window.innerWidth)
-  }
-  
-  useEffect(() => {
-    window.addEventListener('resize', handleResize)
+  const LIST_SIZE = 2000;
 
-    //removes the event listener when the useeffect is removed
-    return window.removeEventListener('resize', handleResize)
-  }, [])
+  const handleChange = (e) => {
+    setInput(e.target.value);
+    startTransition (() => {
+      const l = [];
+      for (let i = 0; i < LIST_SIZE; i++){
+        l.push(e.target.value)
+      };
+      setList(l)
+    })
+
+  };
+
 
   return (
     <div className="App">
+      <input type='text' value={input} onChange={handleChange} />
+      {list.map((item) => {
+        return <div >{item}</div>
+      })}
 
-      {windowWidth}
     </div>
   );
 }
